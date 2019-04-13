@@ -151,6 +151,5 @@ grid_search = grid_search.fit(X_train, y_train)
 best_parameters = grid_search.best_params_ 
 best_accuracy = grid_search.best_score_
 
-
-# Before: loss: 0.3864 - acc: 0.8512
-# After: loss: 0.3547 - acc: 0.8561
+# Best Accuracy: 0.857875
+# Best parameter: {'batch_size': 12, 'epochs': 10, 'optimizer': 'adam'}
