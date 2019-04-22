@@ -150,3 +150,10 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+
+# Results with nothing changed 
+# Best params:  {'batch_size': 32, 'epochs': 50, 'optimizer': 'adam'}
+# Best accuracy 0.83625
+
+print("Best params: ", best_parameters)
+print("Best accuracy", best_accuracy)
