@@ -137,8 +137,8 @@ def build_classifier(optimizer):
 
 classifier = KerasClassifier(build_fn = build_classifier)
 
-parameters = {'batch_size': [10, 12],
-              'epochs': [5, 10],
+parameters = {'batch_size': [20,32],
+              'epochs': [20, 32],
               'optimizer': ['adam', 'rmsprop']}
 
 grid_search = GridSearchCV(estimator = classifier,
@@ -151,6 +151,5 @@ grid_search = grid_search.fit(X_train, y_train)
 best_parameters = grid_search.best_params_ 
 best_accuracy = grid_search.best_score_
 
-
-# Before: loss: 0.3864 - acc: 0.8512
-# After: loss: 0.3547 - acc: 0.8561
+# Best Accuracy: 0.861375
+# Best parameter: {'batch_size': 30, 'epochs': 32, 'optimizer': 'adam'}
