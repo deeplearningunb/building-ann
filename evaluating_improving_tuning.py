@@ -40,7 +40,6 @@ from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
-
 # Part 2 - Now let's make the ANN!
 
 # Importing the Keras libraries and packages
@@ -98,10 +97,10 @@ cm = confusion_matrix(y_test, y_pred)
 
 # Evaluating the ANN
 from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import cross_val_score
 from keras.models import Sequential
 from keras.layers import Dense
-#from keras.layers import Dropout
+from keras.layers import Dropout
+from sklearn.model_selection import cross_val_score
 def build_classifier():
     classifier = Sequential()
     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
@@ -137,16 +136,33 @@ def build_classifier(optimizer):
 
 classifier = KerasClassifier(build_fn = build_classifier)
 
-parameters = {'batch_size': [25, 32],
-              'epochs': [10, 50],
-              'optimizer': ['adam', 'rmsprop']}
+parameters = {'batch_size': [5, 15],
+              'epochs': [10, 15],
+              'optimizer': ['adam', 'rmsprop', 'SGD']}
 
 grid_search = GridSearchCV(estimator = classifier,
                            scoring = 'accuracy',
                            param_grid = parameters,
-                           cv = 10)
+                           cv = 10,
+                           n_jobs=-1)
 
 grid_search = grid_search.fit(X_train, y_train)
+sk_params = grid_search.best_params_
 
-best_parameters = grid_search.best_params_
-best_accuracy = grid_search.best_score_
+classifier = KerasClassifier(build_fn = build_classifier, **sk_params)
+from sklearn.model_selection import cross_val_score
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
+mean = accuracies.mean()
+variance = accuracies.std()
+
+print(f'best_params = {sk_params}')
+print(f'mean = {mean}')
+print(f'variance = {variance}')
+print(f'accuracy = {grid_search.best_score_}')
+
+'''
+#best_params = {'batch_size': 15, 'epochs': 15, 'optimizer': 'adam'}
+#mean = 0.8312500100024044
+#variance = 0.012698424342315178
+#accuracy = 0.832875
+'''
