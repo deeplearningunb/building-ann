@@ -135,18 +135,32 @@ def build_classifier(optimizer):
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 
-classifier = KerasClassifier(build_fn = build_classifier)
-
-parameters = {'batch_size': [25, 32],
-              'epochs': [10, 50],
-              'optimizer': ['adam', 'rmsprop']}
+parameters = {'batch_size': [5, 15],
+              'epochs': [10, 15],
+              'optimizer': ['adam', 'rmsprop', 'SGD']}
 
 grid_search = GridSearchCV(estimator = classifier,
                            scoring = 'accuracy',
                            param_grid = parameters,
-                           cv = 10)
+                           cv = 10,
+                           n_jobs=-1)
 
 grid_search = grid_search.fit(X_train, y_train)
+gsbp = grid_search.best_params_
 
-best_parameters = grid_search.best_params_
-best_accuracy = grid_search.best_score_
+classifier = KerasClassifier(build_fn = build_classifier, **gsbp)
+from sklearn.model_selection import cross_val_score
+accuracys = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
+media = accuracys.mean()
+variance = accuracys.std()
+
+print('melhores parametros = {}'.format(gsbp))
+print('média = {}'.format(media))
+print('variação = {}'.format(variance))
+print('acuracia = {}'.format(grid_search.best_score_))
+
+'''
+>>> melhores parametros = {'batch_size': 5, 'epochs': 50, 'optimizer': 'SGD'}
+>>> média = 0.8506250081211328
+>>> variação = 0.013041399829827298
+>>> acuracia = 0.853625'''
