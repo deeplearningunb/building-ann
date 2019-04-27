@@ -135,8 +135,8 @@ def build_classifier(optimizer):
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 
-parameters = {'batch_size': [5, 15],
-              'epochs': [10, 15],
+parameters = {'batch_size': [5, 25],
+              'epochs': [10, 15, 50, 100],
               'optimizer': ['adam', 'rmsprop', 'SGD']}
 
 grid_search = GridSearchCV(estimator = classifier,
