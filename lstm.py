@@ -41,6 +41,10 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
+# Convert to 3d (not recommended)
+X_test = np.reshape(X_test, X_test.shape + (1,))
+X_train = np.reshape(X_train, X_train.shape + (1,))
+
 # Part 2 - Now let's make the ANN!
 
 # Importing the Keras libraries and packages
@@ -49,30 +53,29 @@ from keras.layers import Dense, Dropout, Conv1D,  Masking, Embedding, LSTM
 from keras.initializers import RandomNormal
 
 # Initialising the ANN
-classifier = Sequential()
 
-classifier.add(Dense(256, input_dim=11, activation='relu'))
+model = Sequential()
 
-classifier.add(Dropout(0.5))
+model.add(LSTM(128))
 
-classifier.add(Dense(256, activation='relu'))
+model.add(Dropout(0.5))
 
-classifier.add(Dropout(0.5))
-
-classifier.add(Dense(1, activation='sigmoid'))
+model.add(Dense(1, activation='sigmoid'))
 
 # Compiling the ANN
-classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
-
-print(classifier.summary())
+model.compile(loss='binary_crossentropy',
+              optimizer='rmsprop',
+              metrics=['accuracy'])
 
 # Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size = 10, epochs = 30)
+model.fit(X_train, y_train, batch_size=16, epochs=10)
+print(model.summary())
+
 
 # Part 3 - Making predictions and evaluating the model
 
 # Predicting the Test set results
-y_pred = classifier.predict(X_test)
+y_pred = model.predict(X_test)
 y_pred = (y_pred > 0.5)
 
 # Making the Confusion Matrix

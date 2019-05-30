@@ -1,3 +1,4 @@
+
 # Artificial Neural Network
 
 # Installing Theano
@@ -53,21 +54,20 @@ from keras.layers import Dropout
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-# classifier.add(Dropout(rate = 0.1))
-
-# Adding the second hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
-# classifier.add(Dropout(rate = 0.1))
-
-# Adding the output layer
+classifier.add(Dense(units = 256, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dropout(0.5))
+classifier.add(Dense(units = 256, kernel_initializer = 'uniform', activation = 'relu'))
+classifier.add(Dropout(0.5))
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
 
 # Compiling the ANN
-classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
 # Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
+classifier.fit(X_train, y_train, batch_size = 10, epochs = 10)
+
+
+# Before optimization loss: 0.3864 - acc: 0.8512
 
 # Part 3 - Making predictions and evaluating the model
 
@@ -104,12 +104,12 @@ from keras.layers import Dense
 #from keras.layers import Dropout
 def build_classifier():
     classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dropout(rate = 0.1))
+    classifier.add(Dense(units = 256, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dropout(rate = 0.5))
+    classifier.add(Dense(units = 256, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dropout(rate = 0.5))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
-    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+    classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
@@ -127,18 +127,18 @@ from keras.layers import Dense
 
 def build_classifier(optimizer):
     classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dropout(rate = 0.1))
+    classifier.add(Dense(units = 256, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dropout(rate = 0.5))
+    classifier.add(Dense(units = 256, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dropout(rate = 0.5))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 
 classifier = KerasClassifier(build_fn = build_classifier)
 
-parameters = {'batch_size': [25, 32],
-              'epochs': [10, 50],
+parameters = {'batch_size': [10, 12],
+              'epochs': [5, 10],
               'optimizer': ['adam', 'rmsprop']}
 
 grid_search = GridSearchCV(estimator = classifier,
@@ -148,5 +148,8 @@ grid_search = GridSearchCV(estimator = classifier,
 
 grid_search = grid_search.fit(X_train, y_train)
 
-best_parameters = grid_search.best_params_
+best_parameters = grid_search.best_params_ 
 best_accuracy = grid_search.best_score_
+
+# Best Accuracy: 0.857875
+# Best parameter: {'batch_size': 12, 'epochs': 10, 'optimizer': 'adam'}
