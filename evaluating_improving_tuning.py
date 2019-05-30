@@ -61,7 +61,8 @@ classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 're
 # classifier.add(Dropout(rate = 0.1))
 
 # Adding the output layer
-classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation =
+    'tanh'))
 
 # Compiling the ANN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
@@ -108,7 +109,8 @@ def build_classifier():
     classifier.add(Dropout(rate = 0.1))
     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
     classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation =
+        'tanh'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
@@ -131,14 +133,15 @@ def build_classifier(optimizer):
     classifier.add(Dropout(rate = 0.1))
     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
     classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation =
+        'tanh'))
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 
 classifier = KerasClassifier(build_fn = build_classifier)
 
-parameters = {'batch_size': [25, 32],
-              'epochs': [10, 50],
+parameters = {'batch_size': [25, 30],
+              'epochs': [20, 40],
               'optimizer': ['adam', 'rmsprop']}
 
 grid_search = GridSearchCV(estimator = classifier,
@@ -150,3 +153,19 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+
+# Results with nothing changed 
+# Best params:  {'batch_size': 32, 'epochs': 50, 'optimizer': 'adam'}
+# Best accuracy 0.83625
+
+# Results with epochs set to [20, 40], batch_size set to [25, 30] and using tanh
+# in the output layer
+# Best params:  {'batch_size': 30, 'epochs': 40, 'optimizer': 'adam'}
+# Best accuracy 0.843125
+
+# Changing all sequentials to use tanh
+# Best params:  {'batch_size': 25, 'epochs': 20, 'optimizer': 'rmsprop'}
+# Best accuracy 0.844375
+
+print("Best params: ", best_parameters)
+print("Best accuracy", best_accuracy)
