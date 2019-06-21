@@ -1,3 +1,7 @@
+# Trabalho realizado no Notebook
+
+
+
 # Construindo uma Rede Neural Artificial
 
 Construindo sua primeira rede neural usando Keras, Theano e Tensorflow
