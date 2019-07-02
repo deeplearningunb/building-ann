@@ -152,7 +152,7 @@ def build_classifier(optimizer):
 
 classifier = KerasClassifier(build_fn = build_classifier)
 
-parameters = {'batch_size': [10, 25, 32],
+parameters = {'batch_size': [25, 32],
               'epochs': [100, 500],
               'optimizer': ['adam', 'rmsprop']}
 
@@ -165,3 +165,26 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+
+
+
+# With the optimized parameters
+
+def build_classifier():
+    classifier = Sequential()
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+    classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
+    return classifier
+
+classifier = KerasClassifier(build_fn = build_classifier, batch_size = 25, epochs = 500)
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
+# array([0.86      , 0.85625   , 0.88249999, 0.85124999, 0.88125   ,
+#        0.83625   , 0.85875   , 0.82625   , 0.84125   , 0.8575    ])
+mean = accuracies.mean()
+# 0.8551249971613288
+variance = accuracies.std()
+# 0.01695075570159448
+
+
