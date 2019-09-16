@@ -1,0 +1,9 @@
+version: '3.5'
+services:
+
+  building-ann:
+    container_name: building-ann
+    build: .
+    command: ["sleep", "infinity"]
+    volumes:
+      - .:/building-ann
