@@ -39,7 +39,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
+print(X_train)
 X_test = sc.transform(X_test)
+print(X_test)
 
 # Part 2 - Now let's make the ANN!
 
@@ -58,7 +60,7 @@ classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 're
 classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
 
 # Adding the output layer
-classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'softsign'))
 
 # Compiling the ANN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
