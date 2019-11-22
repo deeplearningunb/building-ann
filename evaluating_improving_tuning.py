@@ -165,5 +165,11 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+mean_score = grid_search.cv_results_['mean_test_score']
+std_score = grid_search.cv_results_['std_test_score']
+params_score = grid_search.cv_results_['params']
 
 print('Melhores parametros {}\nMelhor Acuracia: {}'.format(best_parameters, best_accuracy))
+print('Média:        Var:      Param:')
+for mean, stdev, param in zip(mean_score, std_score, params_score):
+    print("%f (%f) com: %r" % (mean, stdev, param))
