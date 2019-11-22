@@ -165,3 +165,5 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+
+print('Melhores parametros {}\nMelhor Acuracia: {}'.format(best_parameters, best_accuracy))
