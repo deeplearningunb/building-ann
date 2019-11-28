@@ -3,32 +3,25 @@
 Construindo sua primeira rede neural usando Keras, Theano e Tensorflow
 Parte da matéria de DeepLearning da escola de Engenharia de Software da UnB
 
-## Usage
+## Tarefas
+* Crie uma branch com seu nome
+* Troque a função de ativação
+* Compile a rede
+* Commit do resultado (NA SUA BRANCH)
 
-### jupyter-notebook
+## Funções de Ativação Utilizadas
 
-Open a `jupyter-notebook` in your desired `env` and run the command:
+Uma função utilizada para saber a saída do nó, ou seja, tenta determinar a saída da rede neural
 
-```sh
-jupyter-notebook ArtificialNeuralNetwork.ipynb
-```
-### Python module
+> sigmoid: A principal razão pela qual usamos a função sigmóide é porque ela nos fornece uma forte precisão em contextos binários pois varia entre 0 e 1. Portanto, é especialmente usado em modelos onde temos que prever a probabilidade de existência de algo.
 
-Install the requirements in the desired `env`:
+![Sigmoid Function Example](https://miro.medium.com/max/485/1*Xu7B5y9gp0iL5ooBj7LtWw.png)
 
-```sh
-pip install -r requirements.txt
-```
+> tanh: Bastante similar a função sigmoid descrita cima, entretanto consegue se dar bem com valores fortemente positivos ou fortemente negativos. 
 
-Run the python module and make changes in a file editor:
+![Tanh example](https://www.medcalc.org/manual/_help/functions/tanh.png)
 
-```sh
-python ann.py
-```
+## Resultados
+No código ann.py está descrito algumas informções adicionais acerca das funções de ativação.
 
-or
-
-```sh
-python evaluating_improving_tuning.py
-```
-
+![Results](https://i.imgur.com/BsHfwfb.png)
