@@ -115,6 +115,10 @@ accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, c
 mean = accuracies.mean()
 variance = accuracies.std()
 
+print(accuracies)
+print(mean)
+print(variance)
+
 # Improving the ANN
 # Dropout Regularization to reduce overfitting if needed
 from keras.layers import Dropout
@@ -133,6 +137,10 @@ classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epoch
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
 mean = accuracies.mean()
 variance = accuracies.std()
+
+print(accuracies)
+print(mean)
+print(variance)
 
 # Tuning the ANN
 from keras.wrappers.scikit_learn import KerasClassifier
@@ -165,3 +173,6 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+
+print(best_parameters)
+print(best_accuracy)
