@@ -115,11 +115,15 @@ accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, c
 mean = accuracies.mean()
 variance = accuracies.std()
 
+print(accuracies)
+print(mean)
+print(variance)
+
 # Improving the ANN
 # Dropout Regularization to reduce overfitting if needed
 from keras.layers import Dropout
 
-def build_classifier():
+def build_classifier2():
     classifier = Sequential()
     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
     classifier.add(Dropout(rate = 0.1))
@@ -129,10 +133,14 @@ def build_classifier():
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 
-classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
+classifier = KerasClassifier(build_fn = build_classifier2, batch_size = 10, epochs = 10)
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
 mean = accuracies.mean()
 variance = accuracies.std()
+
+print(accuracies)
+print(mean)
+print(variance)
 
 # Tuning the ANN
 from keras.wrappers.scikit_learn import KerasClassifier
@@ -140,7 +148,7 @@ from sklearn.model_selection import GridSearchCV
 from keras.models import Sequential
 from keras.layers import Dense
 
-def build_classifier(optimizer):
+def build_classifier3(optimizer):
     classifier = Sequential()
     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
     classifier.add(Dropout(rate = 0.1))
@@ -150,7 +158,7 @@ def build_classifier(optimizer):
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 
-classifier = KerasClassifier(build_fn = build_classifier)
+classifier = KerasClassifier(build_fn = build_classifier3)
 
 parameters = {'batch_size': [10, 25, 32],
               'epochs': [100, 500],
@@ -165,3 +173,6 @@ grid_search = grid_search.fit(X_train, y_train)
 
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
+
+print(best_parameters)
+print(best_accuracy)
