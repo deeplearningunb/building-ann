@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.metrics import classification_report
 
 # Evitando Warnings
 import warnings
@@ -43,6 +44,7 @@ classifier = Sequential()
 # Adicionando Primeira Layer
 
 classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh', input_dim = 11))
+#classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
 
 ## A função tanh é mais refinada (suavizada) em relação a função da relu e se da muito bem com valores fortemente positivos e valores fortemente negativos 
 ## Além disso a função tanh é "semelhante" a função sigmoid o que gerou uma melhor conexão entre as layers aumentando a acuracia em relação aos inputs anteriores
@@ -50,10 +52,12 @@ classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'ta
 # Segunda Layer
 
 classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh'))
+#classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh'))
 
 # Layer De Saída
 
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid')) ## Activation Function:  
+#classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid')) ## Activation Function:  
 
 
 # Compiling the ANN
@@ -75,7 +79,23 @@ y_pred = (y_pred > 0.5)
 
 # Making the Confusion Matrix
 
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, y_pred)
+#from sklearn.metrics import confusion_matrix
+#cm = confusion_matrix(y_test, y_pred)
+#print()
+#print(cm)
+
+## Accuracy e Médias
+from sklearn.metrics import classification_report
+valores_reais    = y_test
+valores_preditos = y_pred
+target_names = (['Valores Reais', 'Valores Preditos'])
 print()
-print(cm)
+print('========================Avaliação da Rede========================')
+# Média e Acurácia
+print(classification_report(valores_reais, valores_preditos, target_names=target_names))
+
+## Variação
+from sklearn.metrics import explained_variance_score
+
+print('Variance:', "%.2f" % explained_variance_score(valores_reais, valores_preditos))
+print('=================================================================')
