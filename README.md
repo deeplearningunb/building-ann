@@ -3,32 +3,16 @@
 Construindo sua primeira rede neural usando Keras, Theano e Tensorflow
 Parte da matéria de DeepLearning da escola de Engenharia de Software da UnB
 
-## Usage
+## Funções de ativação
 
-### jupyter-notebook
+### ReLu
+ReLU é a função de ativação mais amplamente utilizada ao projetar redes neurais atualmente. Primeiramente, a função ReLU é não linear, o que significa que podemos facilmente copiar os erros para trás e ter várias camadas de neurônios ativados pela função ReLU.
 
-Open a `jupyter-notebook` in your desired `env` and run the command:
+### Tanh
+Tanh funciona de forma semelhante à função sigmóide, mas sim simétrico em relação à origem. varia de -1 a 1.
 
-```sh
-jupyter-notebook ArtificialNeuralNetwork.ipynb
-```
-### Python module
+### Sigmoid
+A função de ativação sigmoid é comumente utilizada por redes neurais com propagação positiva (Feedforward) que precisam ter como saída apenas números positivos, em redes neurais multicamadas e em outras redes com sinais contínuos.
 
-Install the requirements in the desired `env`:
-
-```sh
-pip install -r requirements.txt
-```
-
-Run the python module and make changes in a file editor:
-
-```sh
-python ann.py
-```
-
-or
-
-```sh
-python evaluating_improving_tuning.py
-```
-
+## Resultado
+![](resultado.png)
