@@ -23,12 +23,21 @@ y = dataset.iloc[:, 13].values
 
 # Encoding categorical data
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
 labelencoder_X_1 = LabelEncoder()
 X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
+
 labelencoder_X_2 = LabelEncoder()
 X[:, 2] = labelencoder_X_2.fit_transform(X[:, 2])
-onehotencoder = OneHotEncoder(categorical_features = [1])
-X = onehotencoder.fit_transform(X).toarray()
+
+#alteracoes referente a incompatibilidade das funcoes com a nova versao do modulo
+#onehotencoder = OneHotEncoder(categorical_features = [1])
+#X = onehotencoder.fit_transform(X).toarray()
+ct = ColumnTransformer(transformers=[("OneHot", OneHotEncoder(), [1])],remainder='passthrough')
+X = ct.fit_transform(X.tolist())
+X = X.astype('float64')
+
 X = X[:, 1:]
 
 # Splitting the dataset into the Training set and Test set
@@ -53,11 +62,15 @@ from keras.layers import Dropout
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh', input_dim = 11))
 # classifier.add(Dropout(rate = 0.1))
 
 # Adding the second hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+classifier.add(Dense(units = 20, kernel_initializer = 'uniform', activation = 'tanh'))
+# classifier.add(Dropout(rate = 0.1))
+
+# Adding the second hidden layer
+classifier.add(Dense(units = 10, kernel_initializer = 'uniform', activation = 'tanh'))
 # classifier.add(Dropout(rate = 0.1))
 
 # Adding the output layer
@@ -104,8 +117,8 @@ from keras.layers import Dense
 #from keras.layers import Dropout
 def build_classifier():
     classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'elu', input_dim = 11))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'elu'))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
@@ -121,9 +134,9 @@ from keras.layers import Dropout
 
 def build_classifier():
     classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'elu', input_dim = 11))
     classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh'))
     classifier.add(Dropout(rate = 0.1))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
@@ -142,9 +155,9 @@ from keras.layers import Dense
 
 def build_classifier(optimizer):
     classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh', input_dim = 11))
     classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'tanh'))
     classifier.add(Dropout(rate = 0.1))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
