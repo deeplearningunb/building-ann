@@ -23,12 +23,18 @@ y = dataset.iloc[:, 13].values
 
 # Encoding categorical data
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
 labelencoder_X_1 = LabelEncoder()
 X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
 labelencoder_X_2 = LabelEncoder()
 X[:, 2] = labelencoder_X_2.fit_transform(X[:, 2])
-onehotencoder = OneHotEncoder(categorical_features = [1])
-X = onehotencoder.fit_transform(X).toarray()
+
+columnTransformer = ColumnTransformer(transformers=[("OneHot", OneHotEncoder(), [1])],
+                                      remainder="passthrough")
+
+X = columnTransformer.fit_transform(X.tolist())
+X = X.astype("float64")
 X = X[:, 1:]
 
 # Splitting the dataset into the Training set and Test set
@@ -52,10 +58,12 @@ from keras.layers import Dense
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'softplus', input_dim = 11))
+# classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'softplus', input_dim = 11))
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
 
 # Adding the second hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'softplus'))
+# classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'softplus'))
+classifier.add(Dense(units = 10, kernel_initializer = 'uniform', activation = 'relu'))
 
 # Adding the output layer
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'tanh'))
@@ -75,3 +83,10 @@ y_pred = (y_pred > 0.5)
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
+
+print('-'*30)
+print("Confusion matrix")
+print(cm)
+print(f"Hit = {cm[0][0] + cm[1][1]} ({round(((cm[0][0] + cm[1][1]) / np.sum(cm))*100, 2)}%)")
+print(f"Miss = {cm[0][1] + cm[1][0]} ({round(((cm[0][1] + cm[1][0]) / np.sum(cm))*100, 2)}%)")
+print(f"Total = {np.sum(cm)}")
