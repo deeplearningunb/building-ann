@@ -23,12 +23,24 @@ y = dataset.iloc[:, 13].values
 
 # Encoding categorical data
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
 labelencoder_X_1 = LabelEncoder()
 X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
 labelencoder_X_2 = LabelEncoder()
 X[:, 2] = labelencoder_X_2.fit_transform(X[:, 2])
-onehotencoder = OneHotEncoder(categorical_features = [1])
-X = onehotencoder.fit_transform(X).toarray()
+
+onehotencoder = ColumnTransformer(
+    transformers=[
+        ("OneHot",        
+         OneHotEncoder(),
+         [1]
+         )
+    ],
+    remainder='passthrough'
+)
+
+X = onehotencoder.fit_transform(X)
 X = X[:, 1:]
 
 # Splitting the dataset into the Training set and Test set
@@ -48,12 +60,13 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
+import tensorflow as tf
 
 # Initialising the ANN
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'sigmoid', input_dim = 11))
 # classifier.add(Dropout(rate = 0.1))
 
 # Adding the second hidden layer
@@ -61,7 +74,7 @@ classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 're
 # classifier.add(Dropout(rate = 0.1))
 
 # Adding the output layer
-classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'relu'))
 
 # Compiling the ANN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
@@ -94,74 +107,90 @@ new_prediction = (new_prediction > 0.5)
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 
+print(cm)
+
+first = cm[0][1] + cm[1][0]
+second = cm[0][0] + cm[1][1]
+result =  100 - ((first/second)*100)
+
+print("acuracia: ", result)
+
+# [[1555   40]
+#  [ 235  170]]
+# acuracia:  84.05797101449275
+
+# Resposta: Ao passar a função de ativação "sigmoid" para a primeira camada, 
+# o modelo demostrou uma acuracia maior, pois para o resultado esperado do modelo de 0 ou 1 a funçao 
+# 'sigmoid' é a que mais se adequa pois transforma o resultado entre 0 e 1.
+
 # Part 4 - Evaluating, Improving and Tuning the ANN
 
 # Evaluating the ANN
-from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import cross_val_score
-from keras.models import Sequential
-from keras.layers import Dense
-#from keras.layers import Dropout
-def build_classifier():
-    classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
-    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
-    return classifier
+# from keras.wrappers.scikit_learn import KerasClassifier
+# from sklearn.model_selection import cross_val_score
+# from keras.models import Sequential
+# from keras.layers import Dense
+# from keras.layers import Dropout
+# def build_classifier():
+#     classifier = Sequential()
+#     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+#     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+#     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+#     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+#     return classifier
 
-classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
-accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
-mean = accuracies.mean()
-variance = accuracies.std()
+# classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
+# accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
+# mean = accuracies.mean()
+# variance = accuracies.std()
 
 # Improving the ANN
 # Dropout Regularization to reduce overfitting if needed
-from keras.layers import Dropout
+# from keras.layers import Dropout
 
-def build_classifier():
-    classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
-    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
-    return classifier
+# def build_classifier():
+#     classifier = Sequential()
+#     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+#     classifier.add(Dropout(rate = 0.1))
+#     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+#     classifier.add(Dropout(rate = 0.1))
+#     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+#     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+#     return classifier
 
-classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
-accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
-mean = accuracies.mean()
-variance = accuracies.std()
+# classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 10)
+# accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = -1)
+# mean = accuracies.mean()
+# variance = accuracies.std()
 
 # Tuning the ANN
-from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import GridSearchCV
-from keras.models import Sequential
-from keras.layers import Dense
+# from keras.wrappers.scikit_learn import KerasClassifier
+# from sklearn.model_selection import GridSearchCV
+# from keras.models import Sequential
+# from keras.layers import Dense
 
-def build_classifier(optimizer):
-    classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dropout(rate = 0.1))
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
-    classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
-    return classifier
+# def build_classifier(optimizer):
+#     classifier = Sequential()
+#     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+#     classifier.add(Dropout(rate = 0.1))
+#     classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+#     classifier.add(Dropout(rate = 0.1))
+#     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+#     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
+#     return classifier
 
-classifier = KerasClassifier(build_fn = build_classifier)
+# classifier = KerasClassifier(build_fn = build_classifier)
 
-parameters = {'batch_size': [10, 25, 32],
-              'epochs': [100, 500],
-              'optimizer': ['adam', 'rmsprop']}
+# parameters = {'batch_size': [10, 25, 32],
+#               'epochs': [100, 500],
+#               'optimizer': ['adam', 'rmsprop']}
 
-grid_search = GridSearchCV(estimator = classifier,
-                           scoring = 'accuracy',
-                           param_grid = parameters,
-                           cv = 10)
+# grid_search = GridSearchCV(estimator = classifier,
+#                            scoring = 'accuracy',
+#                            param_grid = parameters,
+#                            cv = 10)
 
-grid_search = grid_search.fit(X_train, y_train)
+# grid_search = grid_search.fit(X_train, y_train)
 
-best_parameters = grid_search.best_params_
-best_accuracy = grid_search.best_score_
+# best_parameters = grid_search.best_params_
+# best_accuracy = grid_search.best_score_
