@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+#!/usr/bin/env python2
+
 # Artificial Neural Network
 
 # Installing Theano
@@ -23,12 +26,15 @@ y = dataset.iloc[:, 13].values
 
 # Encoding categorical data
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 labelencoder_X_1 = LabelEncoder()
 X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
 labelencoder_X_2 = LabelEncoder()
 X[:, 2] = labelencoder_X_2.fit_transform(X[:, 2])
-onehotencoder = OneHotEncoder(categorical_features = [1])
-X = onehotencoder.fit_transform(X).toarray()
+onehotencoder = ColumnTransformer([('one_hot_encoder', OneHotEncoder(), [1])], 
+    remainder='passthrough'
+)
+X = np.array(onehotencoder.fit_transform(X), dtype=np.float)
 X = X[:, 1:]
 
 # Splitting the dataset into the Training set and Test set
