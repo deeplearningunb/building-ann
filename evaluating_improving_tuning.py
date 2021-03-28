@@ -74,7 +74,7 @@ classifier.add(Dense(units=1, kernel_initializer='uniform', activation='sigmoid'
 classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size=10, epochs=1)
+classifier.fit(X_train, y_train, batch_size=10, epochs=100)
 
 # Part 3 - Making predictions and evaluating the model
 
@@ -166,7 +166,7 @@ def build_classifier(optimizer):
 classifier = KerasClassifier(build_fn=build_classifier)
 
 parameters = {'batch_size': [10, 25, 32],
-              'epochs': [1, 5],
+              'epochs': [100, 500],
               'optimizer': ['adam', 'rmsprop']}
 
 grid_search = GridSearchCV(estimator=classifier,
@@ -189,19 +189,18 @@ print('Média-----Var-------Parâmetros')
 for mean, stdv, param in zip(mean_test_score, std_test_score, params_score):
     print("%f (%f) com: %r" % (mean, stdv, param))
 
-# Resultado do treinamento com poucas épocas:
-# Melhores Parâmetros: {'batch_size': 10, 'epochs': 5, 'optimizer': 'adam'}
-# Melhor Acurácia: 0.804
+# Melhores Parâmetros: {'batch_size': 25, 'epochs': 500, 'optimizer': 'rmsprop'}
+# Melhor Acurácia: 0.8391249999999999
 # Média-----Var-------Parâmetros
-# 0.796000 (0.010106) com: {'batch_size': 10, 'epochs': 1, 'optimizer': 'adam'}
-# 0.796000 (0.010106) com: {'batch_size': 10, 'epochs': 1, 'optimizer': 'rmsprop'}
-# 0.804000 (0.014799) com: {'batch_size': 10, 'epochs': 5, 'optimizer': 'adam'}
-# 0.803625 (0.018670) com: {'batch_size': 10, 'epochs': 5, 'optimizer': 'rmsprop'}
-# 0.796000 (0.010106) com: {'batch_size': 25, 'epochs': 1, 'optimizer': 'adam'}
-# 0.796000 (0.010106) com: {'batch_size': 25, 'epochs': 1, 'optimizer': 'rmsprop'}
-# 0.796000 (0.010106) com: {'batch_size': 25, 'epochs': 5, 'optimizer': 'adam'}
-# 0.796000 (0.010106) com: {'batch_size': 25, 'epochs': 5, 'optimizer': 'rmsprop'}
-# 0.796000 (0.010106) com: {'batch_size': 32, 'epochs': 1, 'optimizer': 'adam'}
-# 0.796000 (0.010106) com: {'batch_size': 32, 'epochs': 1, 'optimizer': 'rmsprop'}
-# 0.798000 (0.013933) com: {'batch_size': 32, 'epochs': 5, 'optimizer': 'adam'}
-# 0.796000 (0.010106) com: {'batch_size': 32, 'epochs': 5, 'optimizer': 'rmsprop'}
+# 0.834500 (0.007228) com: {'batch_size': 10, 'epochs': 100, 'optimizer': 'adam'}
+# 0.836125 (0.010961) com: {'batch_size': 10, 'epochs': 100, 'optimizer': 'rmsprop'}
+# 0.837500 (0.010969) com: {'batch_size': 10, 'epochs': 500, 'optimizer': 'adam'}
+# 0.836000 (0.007198) com: {'batch_size': 10, 'epochs': 500, 'optimizer': 'rmsprop'}
+# 0.835500 (0.007988) com: {'batch_size': 25, 'epochs': 100, 'optimizer': 'adam'}
+# 0.837500 (0.012711) com: {'batch_size': 25, 'epochs': 100, 'optimizer': 'rmsprop'}
+# 0.837500 (0.009937) com: {'batch_size': 25, 'epochs': 500, 'optimizer': 'adam'}
+# 0.839125 (0.012158) com: {'batch_size': 25, 'epochs': 500, 'optimizer': 'rmsprop'}
+# 0.832500 (0.009699) com: {'batch_size': 32, 'epochs': 100, 'optimizer': 'adam'}
+# 0.835000 (0.012833) com: {'batch_size': 32, 'epochs': 100, 'optimizer': 'rmsprop'}
+# 0.836875 (0.010113) com: {'batch_size': 32, 'epochs': 500, 'optimizer': 'adam'}
+# 0.838375 (0.013614) com: {'batch_size': 32, 'epochs': 500, 'optimizer': 'rmsprop'}
