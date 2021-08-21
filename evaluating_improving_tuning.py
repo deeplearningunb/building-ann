@@ -135,6 +135,7 @@ mean = accuracies.mean()
 variance = accuracies.std()
 
 # Tuning the ANN
+
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.model_selection import GridSearchCV
 from keras.models import Sequential
@@ -153,15 +154,18 @@ def build_classifier(optimizer):
 classifier = KerasClassifier(build_fn = build_classifier)
 
 parameters = {'batch_size': [10, 25, 32],
-              'epochs': [100, 500],
+              'epochs': [50, 150],
               'optimizer': ['adam', 'rmsprop']}
 
-grid_search = GridSearchCV(estimator = classifier,
-                           scoring = 'accuracy',
-                           param_grid = parameters,
-                           cv = 10)
+halving_cv = HalvingGridSearchCV(estimator = classifier,
+                                  param_grid = parameters,
+                                  scoring="accuracy", 
+                                  n_jobs=-1, 
+                                  min_resources="exhaust", 
+                                  factor=3,
+                                  cv = 10)
 
-grid_search = grid_search.fit(X_train, y_train)
+halving_cv = halving_cv.fit(X_train, y_train)
 
-best_parameters = grid_search.best_params_
-best_accuracy = grid_search.best_score_
+best_parameters = halving_cv.best_params_
+best_accuracy = halving_cv.best_score_
