@@ -52,19 +52,21 @@ from keras.layers import Dense
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'elu', input_dim = 11)) # A principal mudança foi nessa função. Depois de diversos testes, a alteração da função nessa linha para elu foi o que trouxe melhores resultados. A accuracy atingiu números maiores (e constantes) de forma mais rápida.
 
 # Adding the second hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu')) # As funções relu, elu e selu aqui trazem resultados similares. Dessa forma, mantive a padrão, pois me aparenta trazer resultados mais sólidos/constantes.
 
 # Adding the output layer
-classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid')) # Mesmo testando outras funções de ativação, nenhuma trouxe um nível de accuracy alto (e atingido rapidamente) quanto a sigmoid. Portanto, mantive-a.
 
 # Compiling the ANN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
 # Fitting the ANN to the Training set
 classifier.fit(X_train, y_train, batch_size = 10, epochs = 30)
+
+# Após diversos testes com diferentes combinações de funções, a pequena alteração da primeira função de Relu" para "Elu" trouxe resultados mais acertivos e velozes à ANN.
 
 # Part 3 - Making predictions and evaluating the model
 
